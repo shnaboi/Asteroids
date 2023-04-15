@@ -1,6 +1,6 @@
 const FPS = 30;
 const SHIP_SIZE = 30;
-const TURN_SPEED = 360;
+const TURN_SPEED = 270;
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
@@ -32,8 +32,18 @@ function keyDown(/** @type {keyboardEvent} */ ev) {
     }
 }
 
-function keyUp() {
+function keyUp(ev) {
+    switch(ev.keyCode) {
+        case 37: // Left arrow
+            ship.rot = 0;
+            break;
+        case 38: // Up arrow
 
+            break;
+        case 39: // right arrow
+        ship.rot = 0;
+            break;
+    }
 }
 
 function update() {
@@ -60,6 +70,8 @@ function update() {
     ctx.closePath();
     ctx.stroke();
 
+    //rotate ship
+    ship.a += ship.rot;
 
     // center dot for testing
     ctx.fillStyle = "white"
