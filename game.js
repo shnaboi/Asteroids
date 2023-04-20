@@ -2,6 +2,7 @@ const FPS = 30;
 const SHIP_SIZE = 30;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const TURN_SPEED = 270; //degrees per second
+const FRICTION = .2; //friction coefficient
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
@@ -61,6 +62,9 @@ function update() {
     if (ship.thrust) {
         ship.velocity.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
         ship.velocity.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
+    } else {
+        ship.velocity.x -= FRICTION * ship.velocity.x / FPS;
+        ship.velocity.y -= FRICTION * ship.velocity.y / FPS;
     }
 
     //draw ship
