@@ -67,6 +67,9 @@ function update() {
         ship.velocity.y -= FRICTION * ship.velocity.y / FPS;
     }
 
+    // draw thruster
+    
+
     //draw ship
     ctx.strokeStyle = 'white',
     ctx.lineWidth = SHIP_SIZE / 20;
