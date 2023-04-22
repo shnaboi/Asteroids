@@ -68,7 +68,7 @@ function update() {
     }
 
     // draw thruster
-    
+    // do this
 
     //draw ship
     ctx.strokeStyle = 'white',
