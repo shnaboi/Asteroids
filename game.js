@@ -62,13 +62,29 @@ function update() {
     if (ship.thrust) {
         ship.velocity.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
         ship.velocity.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
+
+         // draw thruster
+        ctx.strokeStyle = 'white',
+        ctx.lineWidth = SHIP_SIZE / 25;
+        ctx.beginPath();
+        ctx.moveTo( // nose
+            ship.x - 4/3 * ship.r * Math.cos(ship.a),
+            ship.y + 4/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // rear left
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+            ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // rear right
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+            ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+        );
+        ctx.closePath();
+        ctx.stroke();
     } else {
         ship.velocity.x -= FRICTION * ship.velocity.x / FPS;
         ship.velocity.y -= FRICTION * ship.velocity.y / FPS;
     }
-
-    // draw thruster
-    // do this
 
     //draw ship
     ctx.strokeStyle = 'white',
