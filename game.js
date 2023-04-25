@@ -3,7 +3,7 @@ const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const TURN_SPEED = 270; //degrees per second
 const FRICTION = .2; //friction coefficient
-const ROIDS_NUM = 3; //initial number of asteroids
+const ROIDS_NUM = 500; //initial number of asteroids
 const ROIDS_SIZE = 100; //init asteroid size in pixels
 const ROIDS_SPD = 50; // init starting speed in pixels/sec
 const ROIDS_VERT = 10; // avg amount of sides of each asteroid
@@ -38,10 +38,16 @@ function createAsteroids() {
     roidsArray = [];
     let x, y;
     for (let i = 0; i < ROIDS_NUM; i++) {
-        x = Math.floor(Math.random() * canvas.width);
-        y = Math.floor(Math.random() * canvas.height);
+        do {
+            x = Math.floor(Math.random() * canvas.width);
+            y = Math.floor(Math.random() * canvas.height);
+        } while (distanceBetweenPoints(ship.x, ship.y, x, y) < ROIDS_SIZE * 2 + ship.r);
         roidsArray.push(newAsteroid(x, y));
     }
+}
+
+function distanceBetweenPoints(xShip, yShip, xRoid, yRoid) {
+    return Math.sqrt(Math.pow(xRoid - xShip, 2) + Math.pow(yRoid - yShip, 2));
 }
 
 function keyDown(/** @type {keyboardEvent} */ ev) {
