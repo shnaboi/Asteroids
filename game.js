@@ -3,6 +3,9 @@ const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const TURN_SPEED = 270; //degrees per second
 const FRICTION = .2; //friction coefficient
+const ROIDS_NUM = 3; //initial number of asteroids
+const ROIDS_SIZE = 100; //init asteroid size in pixels
+const ROIDS_SPD = 50; // init starting speed in pixels/sec
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
@@ -23,7 +26,22 @@ let ship = {
     }
 }
 
+// setup asteroids
+let roidsArray = [];
+createAsteroids();
+
+// setup game loop
 setInterval(update, 1000 / FPS);
+
+function createAsteroids() {
+    roidsArray = [];
+    let x, y;
+    for (let i = 0; i < ROIDS_NUM; i++) {
+        x = Math.floor(Math.random() * canvas.width);
+        y = Math.floor(Math.random() * canvas.height);
+        roidsArray.push(newAsteroid(x, y));
+    }
+}
 
 function keyDown(/** @type {keyboardEvent} */ ev) {
     switch(ev.keyCode) {
@@ -34,7 +52,7 @@ function keyDown(/** @type {keyboardEvent} */ ev) {
             ship.thrust = true;
             break;
         case 39: // right arrow (rotate right)
-        ship.rot = -TURN_SPEED / 180 * Math.PI / FPS;
+            ship.rot = -TURN_SPEED / 180 * Math.PI / FPS;
             break;
     }
 }
@@ -50,6 +68,19 @@ function keyUp(/** @type {keyboardEvent} */ ev) {
         case 39: // right arrow on keyUp
         ship.rot = 0;
             break;
+    }
+}
+
+function newAsteroid(x, y) {
+    let newRoid = {
+        x: x,
+        y: y,
+        // xv and yv is the velocity * direction
+        xv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
+        xv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
+        // r = radius, a = angle in 360 radiuns
+        r: ROIDS_SIZE / 2,
+        a: Math.random() * Math.PI * 2
     }
 }
 
@@ -113,6 +144,19 @@ function update() {
     ctx.closePath();
     ctx.stroke();
 
+    //draw asteroids
+    ctx.strokeStyle = 'slategrey';
+    ctx.lineWidth = SHIP_SIZE / 20;
+    for (let i = 0; i < roidsArray.length; i++) {
+        // draw path
+
+        // draw the polygon
+
+        // move the asteroid
+
+        // handle edge of screen
+    }
+
     // rotate ship
     ship.a += ship.rot;
 
@@ -120,7 +164,7 @@ function update() {
     ship.x += ship.velocity.x;
     ship.y += ship.velocity.y;
 
-    // handle edge of screen
+    // handle ship edge of screen
     if (ship.x < 0 - ship.r) {
         ship.x = canvas.width + ship.r;
     } else if (ship.x > canvas.width + ship.r) {
