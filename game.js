@@ -1,5 +1,5 @@
 const FPS = 30;
-const SHIP_SIZE = 30;
+const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const TURN_SPEED = 270; //degrees per second
 const FRICTION = .2; //friction coefficient
@@ -67,13 +67,21 @@ function update() {
         ctx.strokeStyle = 'white',
         ctx.lineWidth = SHIP_SIZE / 25;
         ctx.beginPath();
-        ctx.moveTo( // nose
-            ship.x - 4/3 * ship.r * Math.cos(ship.a),
-            ship.y + 4/3 * ship.r * Math.sin(ship.a)
-        );
-        ctx.lineTo( // rear left
+        ctx.moveTo( // rear left
             ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
             ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // left peak
+            ship.x - ship.r * (4.5/3 * Math.cos(ship.a) + Math.sin(ship.a) / 2),
+            ship.y + ship.r * (4.5/3 * Math.sin(ship.a) - Math.cos(ship.a) / 2)
+        );
+        ctx.lineTo( // rear center
+            ship.x - 2/3 * ship.r * Math.cos(ship.a),
+            ship.y + 2/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // right peak
+            ship.x - ship.r * (4.5/3 * Math.cos(ship.a) - Math.sin(ship.a) / 2),
+            ship.y + ship.r * (4.5/3 * Math.sin(ship.a) + Math.cos(ship.a) / 2)
         );
         ctx.lineTo( // rear right
             ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
