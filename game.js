@@ -6,6 +6,7 @@ const FRICTION = .2; //friction coefficient
 const ROIDS_NUM = 3; //initial number of asteroids
 const ROIDS_SIZE = 100; //init asteroid size in pixels
 const ROIDS_SPD = 50; // init starting speed in pixels/sec
+const ROIDS_VERT = 10; // avg amount of sides of each asteroid
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
@@ -80,8 +81,10 @@ function newAsteroid(x, y) {
         xv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
         // r = radius, a = angle in 360 radiuns
         r: ROIDS_SIZE / 2,
-        a: Math.random() * Math.PI * 2
+        a: Math.random() * Math.PI * 2,
+        vert: Math.floor(Math.random() * ROIDS_VERT + ROIDS_VERT / 2) 
     }
+    return newRoid;
 }
 
 function update() {
@@ -147,10 +150,31 @@ function update() {
     //draw asteroids
     ctx.strokeStyle = 'slategrey';
     ctx.lineWidth = SHIP_SIZE / 20;
+    let x, y, r, a, vert;
     for (let i = 0; i < roidsArray.length; i++) {
+        //get roid properties
+        x = roidsArray[i].x;
+        y = roidsArray[i].y;
+        r = roidsArray[i].r;
+        a = roidsArray[i].a;
+        vert = roidsArray[i].vert;
+
         // draw path
+        ctx.beginPath();
+        ctx.moveTo(
+            x + r * Math.cos(a),
+            y + r * Math.sin(a)
+        )
 
         // draw the polygon
+        for (let j = 0; j < vert; j++) {
+            ctx.lineTo(
+                x + r * Math.cos(a + j * Math.PI * 2 / vert),
+                y + r * Math.sin(a + j * Math.PI * 2 / vert)
+            )
+        }
+        ctx.closePath();
+        ctx.stroke();
 
         // move the asteroid
 
