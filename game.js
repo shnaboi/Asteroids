@@ -3,10 +3,11 @@ const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const TURN_SPEED = 270; //degrees per second
 const FRICTION = .2; //friction coefficient
-const ROIDS_NUM = 500; //initial number of asteroids
+const ROIDS_JAG = .25; // % of jaggedness of asteroid
+const ROIDS_NUM = 3; //initial number of asteroids
 const ROIDS_SIZE = 100; //init asteroid size in pixels
 const ROIDS_SPD = 50; // init starting speed in pixels/sec
-const ROIDS_VERT = 10; // avg amount of sides of each asteroid
+const ROIDS_VERT = 10; // avg amount of vertices of each asteroid
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
@@ -88,8 +89,14 @@ function newAsteroid(x, y) {
         // r = radius, a = angle in 360 radiuns
         r: ROIDS_SIZE / 2,
         a: Math.random() * Math.PI * 2,
-        vert: Math.floor(Math.random() * ROIDS_VERT + ROIDS_VERT / 2) 
+        vert: Math.floor(Math.random() * ROIDS_VERT + ROIDS_VERT / 2),
+        offset: []
+    };
+    // create the vertex offset array for each asteroid
+    for (let i = 0; i < newRoid.vert; i++) {
+        newRoid.offset.push(Math.random() * ROIDS_JAG * 2 + 1 - ROIDS_JAG);
     }
+
     return newRoid;
 }
 
@@ -156,7 +163,7 @@ function update() {
     //draw asteroids
     ctx.strokeStyle = 'slategrey';
     ctx.lineWidth = SHIP_SIZE / 20;
-    let x, y, r, a, vert;
+    let x, y, r, a, vert, offset;
     for (let i = 0; i < roidsArray.length; i++) {
         //get roid properties
         x = roidsArray[i].x;
@@ -164,19 +171,20 @@ function update() {
         r = roidsArray[i].r;
         a = roidsArray[i].a;
         vert = roidsArray[i].vert;
+        offset = roidsArray[i].offset;
 
         // draw path
         ctx.beginPath();
         ctx.moveTo(
-            x + r * Math.cos(a),
-            y + r * Math.sin(a)
+            x + r * offset[0] * Math.cos(a),
+            y + r * offset[0] * Math.sin(a)
         )
 
-        // draw the polygon
-        for (let j = 0; j < vert; j++) {
+        // draw the asteroid polygon
+        for (let j = 1; j < vert; j++) {
             ctx.lineTo(
-                x + r * Math.cos(a + j * Math.PI * 2 / vert),
-                y + r * Math.sin(a + j * Math.PI * 2 / vert)
+                x + r * offset[j] * Math.cos(a + j * Math.PI * 2 / vert),
+                y + r * offset[j] * Math.sin(a + j * Math.PI * 2 / vert)
             )
         }
         ctx.closePath();
