@@ -85,7 +85,7 @@ function newAsteroid(x, y) {
         y: y,
         // xv and yv is the velocity * direction
         xv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
-        xv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
+        yv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
         // r = radius, a = angle in 360 radiuns
         r: ROIDS_SIZE / 2,
         a: Math.random() * Math.PI * 2,
