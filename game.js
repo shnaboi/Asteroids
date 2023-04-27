@@ -191,6 +191,8 @@ function update() {
         ctx.stroke();
 
         // move the asteroid
+        roidsArray[i].x += roidsArray[i].xv;
+        roidsArray[i].y += roidsArray[i].yv;
 
         // handle edge of screen
     }
