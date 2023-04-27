@@ -195,6 +195,16 @@ function update() {
         roidsArray[i].y += roidsArray[i].yv;
 
         // handle edge of screen
+        if (roidsArray[i].x < 0 - roidsArray[i].r) {
+            roidsArray[i].x = canvas.width + roidsArray[i].r;
+        } else if (roidsArray[i].x > canvas.width + roidsArray[i].r) {
+            roidsArray[i].x = 0 -roidsArray[i].r;
+        }
+        if (roidsArray[i].y < 0 - roidsArray[i].r) {
+            roidsArray[i].y = canvas.height + roidsArray[i].r;
+        } else if (roidsArray[i].y > canvas.height + roidsArray[i].r) {
+            roidsArray[i].y = 0 -roidsArray[i].r;
+        }
     }
 
     // rotate ship
