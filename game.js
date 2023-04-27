@@ -8,6 +8,8 @@ const ROIDS_NUM = 3; //initial number of asteroids
 const ROIDS_SIZE = 100; //init asteroid size in pixels
 const ROIDS_SPD = 50; // init starting speed in pixels/sec
 const ROIDS_VERT = 10; // avg amount of vertices of each asteroid
+const SHOW_BOUNDING = true; // show bounding circles
+const SHOW_CENTER_DOT = false; //show ship center dot
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
@@ -160,11 +162,18 @@ function update() {
     ctx.closePath();
     ctx.stroke();
 
+    if (SHOW_BOUNDING) {
+        ctx.strokeStyle = 'cyan';
+        ctx.beginPath();
+        ctx.arc(ship.x, ship.y, ship.r, 0, Math.PI * 2, true);
+        ctx.stroke();
+    }
+
     //draw asteroids
-    ctx.strokeStyle = 'slategrey';
-    ctx.lineWidth = SHIP_SIZE / 20;
     let x, y, r, a, vert, offset;
     for (let i = 0; i < roidsArray.length; i++) {
+        ctx.strokeStyle = 'slategrey';
+        ctx.lineWidth = SHIP_SIZE / 20;
         //get roid properties
         x = roidsArray[i].x;
         y = roidsArray[i].y;
@@ -189,6 +198,13 @@ function update() {
         }
         ctx.closePath();
         ctx.stroke();
+
+        if (SHOW_BOUNDING) {
+            ctx.strokeStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2, true);
+            ctx.stroke();
+        }
 
         // move the asteroid
         roidsArray[i].x += roidsArray[i].xv;
