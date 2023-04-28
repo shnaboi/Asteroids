@@ -199,10 +199,11 @@ function update() {
         ctx.closePath();
         ctx.stroke();
 
+        // BOUNDING ASTEROIDS
         if (SHOW_BOUNDING) {
             ctx.strokeStyle = 'red';
             ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI * 2, true);
+            ctx.arc(x, y, r-2, 0, Math.PI * 2, true);
             ctx.stroke();
         }
 
