@@ -165,7 +165,7 @@ function update() {
     if (SHOW_BOUNDING) {
         ctx.strokeStyle = 'cyan';
         ctx.beginPath();
-        ctx.arc(ship.x, ship.y, ship.r, 0, Math.PI * 2, true);
+        ctx.arc(ship.x, ship.y, ship.r + 1, 0, Math.PI * 2, true);
         ctx.stroke();
     }
 
@@ -206,23 +206,16 @@ function update() {
             ctx.arc(x, y, r-2, 0, Math.PI * 2, true);
             ctx.stroke();
         }
+    }
 
-        // move the asteroid
-        roidsArray[i].x += roidsArray[i].xv;
-        roidsArray[i].y += roidsArray[i].yv;
-
-        // handle edge of screen
-        if (roidsArray[i].x < 0 - roidsArray[i].r) {
-            roidsArray[i].x = canvas.width + roidsArray[i].r;
-        } else if (roidsArray[i].x > canvas.width + roidsArray[i].r) {
-            roidsArray[i].x = 0 -roidsArray[i].r;
-        }
-        if (roidsArray[i].y < 0 - roidsArray[i].r) {
-            roidsArray[i].y = canvas.height + roidsArray[i].r;
-        } else if (roidsArray[i].y > canvas.height + roidsArray[i].r) {
-            roidsArray[i].y = 0 -roidsArray[i].r;
+    // check for collision
+    for (let i = 0; i < roidsArray.length; i++) {
+        if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
+            console.log('die')
         }
     }
+
+    // GAME MOTION
 
     // rotate ship
     ship.a += ship.rot;
@@ -241,6 +234,24 @@ function update() {
         ship.y = canvas.height + ship.r;
     } else if (ship.y > canvas.height + ship.r) {
         ship.y = 0 -ship.r;
+    }
+
+    // move the asteroid
+    for (let i = 0; i < roidsArray.length; i++) {
+        roidsArray[i].x += roidsArray[i].xv;
+        roidsArray[i].y += roidsArray[i].yv;
+
+        // handle edge of screen
+        if (roidsArray[i].x < 0 - roidsArray[i].r) {
+            roidsArray[i].x = canvas.width + roidsArray[i].r;
+        } else if (roidsArray[i].x > canvas.width + roidsArray[i].r) {
+            roidsArray[i].x = 0 -roidsArray[i].r;
+        }
+        if (roidsArray[i].y < 0 - roidsArray[i].r) {
+            roidsArray[i].y = canvas.height + roidsArray[i].r;
+        } else if (roidsArray[i].y > canvas.height + roidsArray[i].r) {
+            roidsArray[i].y = 0 -roidsArray[i].r;
+        }
     }
 
     // center dot for testing
