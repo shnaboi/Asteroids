@@ -55,9 +55,13 @@ function distanceBetweenPoints(xShip, yShip, xRoid, yRoid) {
     return Math.sqrt(Math.pow(xRoid - xShip, 2) + Math.pow(yRoid - yShip, 2));
 }
 
-function explodeShip() {
+// function explodeShip() {
+//     ship.r = SHIP_SIZE + 5;
+//     setInterval(explodeShip, 2000);
+// }
+
+function triggerRespawn() {
     death = false;
-    console.log('end')
     return;
 }
 
@@ -151,24 +155,60 @@ function update() {
         ship.velocity.y -= FRICTION * ship.velocity.y / FPS;
     }
 
-    //draw ship
-    ctx.strokeStyle = 'white',
-    ctx.lineWidth = SHIP_SIZE / 20;
-    ctx.beginPath();
-    ctx.moveTo( // nose
-        ship.x + 4/3 * ship.r * Math.cos(ship.a),
-        ship.y - 4/3 * ship.r * Math.sin(ship.a)
-    );
-    ctx.lineTo( // rear left
-        ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
-        ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
-    );
-    ctx.lineTo( // rear right
-        ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
-        ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
-    );
-    ctx.closePath();
-    ctx.stroke();
+    //draw ship & death animation
+    // death animation
+    if (death) {
+        console.log('start')
+        setTimeout(triggerRespawn, 2000)
+        ctx.strokeStyle = 'white',
+        ctx.lineWidth = SHIP_SIZE / 20;
+        ctx.beginPath();
+        ctx.moveTo( // nose
+            ship.x + 4/3 * ship.r * Math.cos(ship.a),
+            ship.y - 4/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // rear left
+            ship.x + ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // rear right
+            ship.x + ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+        );
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo( // nose
+            ship.x + 4/3 * ship.r * Math.cos(ship.a),
+            ship.y - 4/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // rear left
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // rear right
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+        );
+        ctx.stroke();
+    } else {
+        ctx.strokeStyle = 'white',
+        ctx.lineWidth = SHIP_SIZE / 20;
+        ctx.beginPath();
+        ctx.moveTo( // nose
+            ship.x + 4/3 * ship.r * Math.cos(ship.a),
+            ship.y - 4/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // rear left
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+            ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // rear right
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+            ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+        );
+        ctx.closePath();
+        ctx.stroke();
+    }
 
     if (SHOW_BOUNDING) {
         ctx.strokeStyle = 'cyan';
@@ -220,6 +260,7 @@ function update() {
     for (let i = 0; i < roidsArray.length; i++) {
         if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
             death = true;
+            // explodeShip();
         }
     }
 
@@ -260,42 +301,6 @@ function update() {
         } else if (roidsArray[i].y > canvas.height + roidsArray[i].r) {
             roidsArray[i].y = 0 -roidsArray[i].r;
         }
-    }
-
-    // death animation
-    if (death) {
-        console.log('start')
-        setTimeout(explodeShip, 2000)
-        ctx.strokeStyle = 'white',
-        ctx.lineWidth = SHIP_SIZE / 20;
-        ctx.beginPath();
-        ctx.moveTo( // nose
-            ship.x + 4/3 * ship.r * Math.cos(ship.a),
-            ship.y - 4/3 * ship.r * Math.sin(ship.a)
-        );
-        ctx.lineTo( // rear left
-            ship.x + ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
-            ship.y - ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
-        );
-        ctx.lineTo( // rear right
-            ship.x + ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
-            ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
-        );
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo( // nose
-            ship.x + 4/3 * ship.r * Math.cos(ship.a),
-            ship.y - 4/3 * ship.r * Math.sin(ship.a)
-        );
-        ctx.lineTo( // rear left
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
-            ship.y - ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
-        );
-        ctx.lineTo( // rear right
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
-            ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
-        );
-        ctx.stroke();
     }
 
     // center dot for testing
