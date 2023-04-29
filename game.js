@@ -11,6 +11,8 @@ const ROIDS_VERT = 10; // avg amount of vertices of each asteroid
 const SHOW_BOUNDING = true; // show bounding circles
 const SHOW_CENTER_DOT = false; //show ship center dot
 
+let death = false;
+
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
 
@@ -51,6 +53,12 @@ function createAsteroids() {
 
 function distanceBetweenPoints(xShip, yShip, xRoid, yRoid) {
     return Math.sqrt(Math.pow(xRoid - xShip, 2) + Math.pow(yRoid - yShip, 2));
+}
+
+function explodeShip() {
+    death = false;
+    console.log('end')
+    return;
 }
 
 function keyDown(/** @type {keyboardEvent} */ ev) {
@@ -211,7 +219,7 @@ function update() {
     // check for collision
     for (let i = 0; i < roidsArray.length; i++) {
         if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
-            console.log('die')
+            death = true;
         }
     }
 
@@ -252,6 +260,42 @@ function update() {
         } else if (roidsArray[i].y > canvas.height + roidsArray[i].r) {
             roidsArray[i].y = 0 -roidsArray[i].r;
         }
+    }
+
+    // death animation
+    if (death) {
+        console.log('start')
+        setTimeout(explodeShip, 2000)
+        ctx.strokeStyle = 'white',
+        ctx.lineWidth = SHIP_SIZE / 20;
+        ctx.beginPath();
+        ctx.moveTo( // nose
+            ship.x + 4/3 * ship.r * Math.cos(ship.a),
+            ship.y - 4/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // rear left
+            ship.x + ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // rear right
+            ship.x + ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+        );
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo( // nose
+            ship.x + 4/3 * ship.r * Math.cos(ship.a),
+            ship.y - 4/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // rear left
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // rear right
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+            ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+        );
+        ctx.stroke();
     }
 
     // center dot for testing
