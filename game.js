@@ -7,7 +7,7 @@ const ROIDS_JAG = .25; // % of jaggedness of asteroid
 const ROIDS_NUM = 3; //initial number of asteroids
 const ROIDS_SIZE = 100; //init asteroid size in pixels
 const ROIDS_SPD = 50; // init starting speed in pixels/sec
-const ROIDS_VERT = 10; // avg amount of vertices of each asteroid
+const ROIDS_VERT = 9; // avg amount of vertices of each asteroid
 const SHOW_BOUNDING = true; // show bounding circles
 const SHOW_CENTER_DOT = false; //show ship center dot
 
@@ -103,7 +103,7 @@ function newAsteroid(x, y) {
         // r = radius, a = angle in 360 radiuns
         r: ROIDS_SIZE / 2,
         a: Math.random() * Math.PI * 2,
-        vert: Math.floor(Math.random() * ROIDS_VERT + ROIDS_VERT / 2),
+        vert: Math.floor(Math.random() * ROIDS_VERT + ROIDS_VERT / 1.25),
         offset: []
     };
     // create the vertex offset array for each asteroid
