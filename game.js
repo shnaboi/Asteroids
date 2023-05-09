@@ -1,6 +1,7 @@
 const FPS = 30;
 const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
+const SHIP_EXPLOSION = 2;
 const TURN_SPEED = 270; //degrees per second
 const FRICTION = .2; //friction coefficient
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
@@ -8,7 +9,7 @@ const ROIDS_NUM = 3; //initial number of asteroids
 const ROIDS_SIZE = 100; //init asteroid size in pixels
 const ROIDS_SPD = 50; // init starting speed in pixels/sec
 const ROIDS_VERT = 9; // avg amount of vertices of each asteroid
-const SHOW_BOUNDING = true; // show bounding circles
+const SHOW_BOUNDING = false; // show bounding circles
 const SHOW_CENTER_DOT = false; //show ship center dot
 
 let death = false;
@@ -29,7 +30,8 @@ let ship = {
     velocity: {
         x: 0,
         y: 0
-    }
+    },
+    explodeTime: 0
 }
 
 // setup asteroids
@@ -55,14 +57,21 @@ function distanceBetweenPoints(xShip, yShip, xRoid, yRoid) {
     return Math.sqrt(Math.pow(xRoid - xShip, 2) + Math.pow(yRoid - yShip, 2));
 }
 
-// function explodeShip() {
-//     ship.r = SHIP_SIZE + 5;
-//     setInterval(explodeShip, 2000);
-// }
-
 function triggerRespawn() {
     death = false;
+    respawn(); 
     return;
+}
+
+function respawn() {
+    ship.x = canvas.width / 2;
+    ship.y = canvas.height / 2;
+    ship.velocity.x = 0;
+    ship.velocity.y = 0;
+}
+
+function explodeShip() {
+    ship.explodeTime = Math.floor(SHIP_EXPLOSION * FPS)
 }
 
 function keyDown(/** @type {keyboardEvent} */ ev) {
@@ -115,6 +124,8 @@ function newAsteroid(x, y) {
 }
 
 function update() {
+    let exploding = ship.explodeTime > 0;
+
     //draw space
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -158,7 +169,6 @@ function update() {
     //draw ship & death animation
     // death animation
     if (death) {
-        console.log('start')
         setTimeout(triggerRespawn, 2000)
         ctx.strokeStyle = 'white',
         ctx.lineWidth = SHIP_SIZE / 20;
