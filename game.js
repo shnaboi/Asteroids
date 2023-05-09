@@ -58,9 +58,9 @@ function distanceBetweenPoints(xShip, yShip, xRoid, yRoid) {
 }
 
 function triggerRespawn() {
+    console.log('trigger respawn')
     death = false;
-    respawn(); 
-    return;
+    respawn();
 }
 
 function respawn() {
@@ -132,35 +132,37 @@ function update() {
 
     //thrust ship
     if (ship.thrust) {
-        ship.velocity.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
-        ship.velocity.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
+        if (!death) {
+            ship.velocity.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
+            ship.velocity.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
 
-         // draw thruster
-        ctx.strokeStyle = 'white',
-        ctx.lineWidth = SHIP_SIZE / 25;
-        ctx.beginPath();
-        ctx.moveTo( // rear left
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
-            ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
-        );
-        ctx.lineTo( // left peak
-            ship.x - ship.r * (4.5/3 * Math.cos(ship.a) + Math.sin(ship.a) / 2),
-            ship.y + ship.r * (4.5/3 * Math.sin(ship.a) - Math.cos(ship.a) / 2)
-        );
-        ctx.lineTo( // rear center
-            ship.x - 2/3 * ship.r * Math.cos(ship.a),
-            ship.y + 2/3 * ship.r * Math.sin(ship.a)
-        );
-        ctx.lineTo( // right peak
-            ship.x - ship.r * (4.5/3 * Math.cos(ship.a) - Math.sin(ship.a) / 2),
-            ship.y + ship.r * (4.5/3 * Math.sin(ship.a) + Math.cos(ship.a) / 2)
-        );
-        ctx.lineTo( // rear right
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
-            ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
-        );
-        ctx.closePath();
-        ctx.stroke();
+            // draw thruster
+            ctx.strokeStyle = 'white',
+            ctx.lineWidth = SHIP_SIZE / 25;
+            ctx.beginPath();
+            ctx.moveTo( // rear left
+                ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+                ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+            );
+            ctx.lineTo( // left peak
+                ship.x - ship.r * (4.5/3 * Math.cos(ship.a) + Math.sin(ship.a) / 2),
+                ship.y + ship.r * (4.5/3 * Math.sin(ship.a) - Math.cos(ship.a) / 2)
+            );
+            ctx.lineTo( // rear center
+                ship.x - 2/3 * ship.r * Math.cos(ship.a),
+                ship.y + 2/3 * ship.r * Math.sin(ship.a)
+            );
+            ctx.lineTo( // right peak
+                ship.x - ship.r * (4.5/3 * Math.cos(ship.a) - Math.sin(ship.a) / 2),
+                ship.y + ship.r * (4.5/3 * Math.sin(ship.a) + Math.cos(ship.a) / 2)
+            );
+            ctx.lineTo( // rear right
+                ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+                ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+            );
+            ctx.closePath();
+            ctx.stroke();
+        }
     } else {
         ship.velocity.x -= FRICTION * ship.velocity.x / FPS;
         ship.velocity.y -= FRICTION * ship.velocity.y / FPS;
@@ -169,7 +171,8 @@ function update() {
     //draw ship & death animation
     // death animation
     if (death) {
-        setTimeout(triggerRespawn, 2000)
+        setTimeout(triggerRespawn, 2000);
+        setTimeout(console.log('timeout start'))
         ctx.strokeStyle = 'white',
         ctx.lineWidth = SHIP_SIZE / 20;
         ctx.beginPath();
@@ -276,12 +279,14 @@ function update() {
 
     // GAME MOTION
 
-    // rotate ship
-    ship.a += ship.rot;
+    if (!death) {
+        // rotate ship
+        ship.a += ship.rot;
 
-    // move ship
-    ship.x += ship.velocity.x;
-    ship.y += ship.velocity.y;
+        // move ship
+        ship.x += ship.velocity.x;
+        ship.y += ship.velocity.y;
+    }
 
     // handle ship edge of screen
     if (ship.x < 0 - ship.r) {
@@ -318,3 +323,5 @@ function update() {
     ctx.fillRect(ship.x -1, ship.y - 1, 2, 2)
 
 }
+
+// fix respawn issue with do once while loop perhaps
