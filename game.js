@@ -20,19 +20,7 @@ let ctx = canvas.getContext('2d');
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 
-let ship = {
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-    r: SHIP_SIZE / 2,
-    a: 90/180 * Math.PI,
-    rot: 0,
-    thrust: false,
-    velocity: {
-        x: 0,
-        y: 0
-    },
-    explodeTime: 0
-}
+let ship = newShip();
 
 // setup asteroids
 let roidsArray = [];
@@ -123,6 +111,22 @@ function newAsteroid(x, y) {
     return newRoid;
 }
 
+function newShip() {
+    return {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        r: SHIP_SIZE / 2,
+        a: 90/180 * Math.PI,
+        rot: 0,
+        thrust: false,
+        velocity: {
+            x: 0,
+            y: 0
+        },
+        explodeTime: 0
+    }
+}
+
 function update() {
     let exploding = ship.explodeTime > 0;
 
@@ -132,7 +136,7 @@ function update() {
 
     //thrust ship
     if (ship.thrust) {
-        if (!death) {
+        if (!exploding) {
             ship.velocity.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
             ship.velocity.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
 
@@ -170,9 +174,25 @@ function update() {
 
     //draw ship & death animation
     // death animation
-    if (death) {
-        setTimeout(triggerRespawn, 2000);
-        setTimeout(console.log('timeout start'))
+    if (!exploding) {
+        ctx.strokeStyle = 'white',
+        ctx.lineWidth = SHIP_SIZE / 20;
+        ctx.beginPath();
+        ctx.moveTo( // nose
+            ship.x + 4/3 * ship.r * Math.cos(ship.a),
+            ship.y - 4/3 * ship.r * Math.sin(ship.a)
+        );
+        ctx.lineTo( // rear left
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+            ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+        );
+        ctx.lineTo( // rear right
+            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+            ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+        );
+        ctx.closePath();
+        ctx.stroke();
+    } else {
         ctx.strokeStyle = 'white',
         ctx.lineWidth = SHIP_SIZE / 20;
         ctx.beginPath();
@@ -202,24 +222,6 @@ function update() {
             ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
             ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
         );
-        ctx.stroke();
-    } else {
-        ctx.strokeStyle = 'white',
-        ctx.lineWidth = SHIP_SIZE / 20;
-        ctx.beginPath();
-        ctx.moveTo( // nose
-            ship.x + 4/3 * ship.r * Math.cos(ship.a),
-            ship.y - 4/3 * ship.r * Math.sin(ship.a)
-        );
-        ctx.lineTo( // rear left
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
-            ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
-        );
-        ctx.lineTo( // rear right
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
-            ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
-        );
-        ctx.closePath();
         ctx.stroke();
     }
 
@@ -269,23 +271,29 @@ function update() {
         }
     }
 
-    // check for collision
-    for (let i = 0; i < roidsArray.length; i++) {
+    // GAME MOTION
+
+    if (!exploding) {
+        // check for collision
+        for (let i = 0; i < roidsArray.length; i++) {
         if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
-            death = true;
-            // explodeShip();
+            // death = true;
+            explodeShip();
         }
     }
 
-    // GAME MOTION
-
-    if (!death) {
         // rotate ship
         ship.a += ship.rot;
 
         // move ship
         ship.x += ship.velocity.x;
         ship.y += ship.velocity.y;
+    } else {
+        ship.explodeTime--;
+
+        if (ship.explodeTime == 0) {
+            ship = newShip();
+        }
     }
 
     // handle ship edge of screen
