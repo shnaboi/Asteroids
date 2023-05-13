@@ -2,7 +2,7 @@ const FPS = 30;
 const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const SHIP_EXPLOSION = 2;
-const SHIP_BLINK_DUR = .2;
+const SHIP_BLINK_DUR = .15;
 const SHIP_INV_DUR = 3;
 const TURN_SPEED = 270; //degrees per second
 const FRICTION = .2; //friction coefficient
@@ -141,7 +141,7 @@ function update() {
 
     //thrust ship
     if (ship.thrust) {
-        if (!exploding) {
+        if (!exploding && blinkOn) {
             ship.velocity.x += SHIP_THRUST * Math.cos(ship.a) / FPS;
             ship.velocity.y -= SHIP_THRUST * Math.sin(ship.a) / FPS;
 
@@ -241,6 +241,7 @@ function update() {
         ctx.stroke();
     }
 
+    // bounding toggle
     if (SHOW_BOUNDING) {
         ctx.strokeStyle = 'cyan';
         ctx.beginPath();
@@ -289,12 +290,14 @@ function update() {
 
     // GAME MOTION
 
+    // check for collision
     if (!exploding) {
-        // check for collision
-        for (let i = 0; i < roidsArray.length; i++) {
-        if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
-            // death = true;
-            explodeShip();
+        if (ship.blinkTime == 0) {
+            for (let i = 0; i < roidsArray.length; i++) {
+            if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
+                // death = true;
+                explodeShip();
+            }
         }
     }
 
@@ -343,8 +346,8 @@ function update() {
     }
 
     // center dot for testing
-    ctx.fillStyle = "white"
-    ctx.fillRect(ship.x -1, ship.y - 1, 2, 2)
+    // ctx.fillStyle = "white"
+    // ctx.fillRect(ship.x -1, ship.y - 1, 2, 2)
 
 }
 
