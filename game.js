@@ -2,6 +2,8 @@ const FPS = 30;
 const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const SHIP_EXPLOSION = 2;
+const SHIP_BLINK_DUR = .2;
+const SHIP_INV_DUR = 3;
 const TURN_SPEED = 270; //degrees per second
 const FRICTION = .2; //friction coefficient
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
@@ -123,12 +125,15 @@ function newShip() {
             x: 0,
             y: 0
         },
-        explodeTime: 0
+        explodeTime: 0,
+        blinkTime: Math.floor(SHIP_INV_DUR / SHIP_BLINK_DUR),
+        respawnTime: Math.floor(SHIP_BLINK_DUR * FPS)
     }
 }
 
 function update() {
     let exploding = ship.explodeTime > 0;
+    let blinkOn = ship.blinkTime % 2 == 0;
 
     //draw space
     ctx.fillStyle = 'black';
@@ -175,23 +180,34 @@ function update() {
     //draw ship & death animation
     // death animation
     if (!exploding) {
-        ctx.strokeStyle = 'white',
-        ctx.lineWidth = SHIP_SIZE / 20;
-        ctx.beginPath();
-        ctx.moveTo( // nose
-            ship.x + 4/3 * ship.r * Math.cos(ship.a),
-            ship.y - 4/3 * ship.r * Math.sin(ship.a)
-        );
-        ctx.lineTo( // rear left
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
-            ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
-        );
-        ctx.lineTo( // rear right
-            ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
-            ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
-        );
-        ctx.closePath();
-        ctx.stroke();
+        if (blinkOn) {
+            ctx.strokeStyle = 'white',
+            ctx.lineWidth = SHIP_SIZE / 20;
+            ctx.beginPath();
+            ctx.moveTo( // nose
+                ship.x + 4/3 * ship.r * Math.cos(ship.a),
+                ship.y - 4/3 * ship.r * Math.sin(ship.a)
+            );
+            ctx.lineTo( // rear left
+                ship.x - ship.r * (2/3 * Math.cos(ship.a) + Math.sin(ship.a)),
+                ship.y + ship.r * (2/3 * Math.sin(ship.a) - Math.cos(ship.a))
+            );
+            ctx.lineTo( // rear right
+                ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
+                ship.y + ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
+            );
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        // handle respawn blink
+        if (ship.blinkTime > 0) {
+            ship.respawnTime--;
+            if (ship.respawnTime == 0) {
+                ship.respawnTime = Math.floor(SHIP_BLINK_DUR * FPS);
+                ship.blinkTime--;
+            }
+        }
     } else {
         ctx.strokeStyle = 'white',
         ctx.lineWidth = SHIP_SIZE / 20;
