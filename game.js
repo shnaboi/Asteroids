@@ -1,10 +1,12 @@
 const FPS = 30;
 const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
-const SHIP_EXPLOSION = 2;
-const SHIP_BLINK_DUR = .15;
-const SHIP_INV_DUR = 3;
+const SHIP_EXPLOSION = 2; // ship explosion time in sec
+const SHIP_BLINK_DUR = .15; // blink duration in frames
+const SHIP_INV_DUR = 3; // ship invincible duration in sec
 const TURN_SPEED = 270; //degrees per second
+const GUN_MAX = 10;
+const GUN_SPD = 30;
 const FRICTION = .2; //friction coefficient
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
 const ROIDS_NUM = 3; //initial number of asteroids
