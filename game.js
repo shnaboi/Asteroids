@@ -69,7 +69,7 @@ function explodeShip() {
 function keyDown(/** @type {keyboardEvent} */ ev) {
     switch(ev.keyCode) {
         case 32: // Space bar (shoot gun)
-            ship.canShoot = true;
+            shootGun();
             break;
         case 37: // Left arrow (rotate left)
             ship.rot = TURN_SPEED / 180 * Math.PI / FPS;
@@ -85,6 +85,9 @@ function keyDown(/** @type {keyboardEvent} */ ev) {
 
 function keyUp(/** @type {keyboardEvent} */ ev) {
     switch(ev.keyCode) {
+        case 32: // Space bar (allow shooting)
+            ship.canShoot = true;
+            break;
         case 37: // Left arrow on keyUp
             ship.rot = 0;
             break;
@@ -134,14 +137,23 @@ function newShip() {
         blinkTime: Math.floor(SHIP_INV_DUR / SHIP_BLINK_DUR),
         respawnTime: Math.floor(SHIP_BLINK_DUR * FPS),
         canShoot: true,
-        laser: []
+        lasers: []
     }
 }
 
 function shootGun() {
     // create laser object
-    return
+    if (ship.canShoot && ship.lasers.length < GUN_MAX) {
+        ship.lasers.push({ // from nose of the ship
+            x: ship.x + 4/3 * ship.r * Math.cos(ship.a),
+            y: ship.y - 4/3 * ship.r * Math.sin(ship.a),
+            xv: GUN_SPD * Math.cos(ship.a) / FPS,
+            yv: GUN_SPD * Math.sin(ship.a) / FPS
+        })
+    }
+
     // prevent further shooting
+    ship.canShoot = false;
 }
 
 function update() {
@@ -251,6 +263,14 @@ function update() {
             ship.x - ship.r * (2/3 * Math.cos(ship.a) - Math.sin(ship.a)),
             ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
         );
+        ctx.stroke();
+    }
+
+    // draw lasers
+
+    for (let i = 0; i < ship.lasers.length; i++) {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(ship.lasers[i].x, ship.lasers[i].y, 2, 2); 
         ctx.stroke();
     }
 
