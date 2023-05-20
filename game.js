@@ -5,8 +5,8 @@ const SHIP_EXPLOSION = 2; // ship explosion time in sec
 const SHIP_BLINK_DUR = .15; // blink duration in frames
 const SHIP_INV_DUR = 3; // ship invincible duration in sec
 const TURN_SPEED = 270; //degrees per second
-const GUN_MAX = 10;
-const GUN_SPD = 30;
+const GUN_MAX = 7;
+const GUN_SPD = 25;
 const FRICTION = .2; //friction coefficient
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
 const ROIDS_NUM = 3; //initial number of asteroids
@@ -68,6 +68,9 @@ function explodeShip() {
 
 function keyDown(/** @type {keyboardEvent} */ ev) {
     switch(ev.keyCode) {
+        case 32: // Space bar (shoot gun)
+            ship.canShoot = true;
+            break;
         case 37: // Left arrow (rotate left)
             ship.rot = TURN_SPEED / 180 * Math.PI / FPS;
             break;
@@ -129,8 +132,16 @@ function newShip() {
         },
         explodeTime: 0,
         blinkTime: Math.floor(SHIP_INV_DUR / SHIP_BLINK_DUR),
-        respawnTime: Math.floor(SHIP_BLINK_DUR * FPS)
+        respawnTime: Math.floor(SHIP_BLINK_DUR * FPS),
+        canShoot: true,
+        laser: []
     }
+}
+
+function shootGun() {
+    // create laser object
+    return
+    // prevent further shooting
 }
 
 function update() {
