@@ -5,7 +5,7 @@ const SHIP_EXPLOSION = 2; // ship explosion time in sec
 const SHIP_BLINK_DUR = .15; // blink duration in frames
 const SHIP_INV_DUR = 3; // ship invincible duration in sec
 const TURN_SPEED = 270; //degrees per second
-const GUN_MAX = 7;
+const GUN_MAX = 200;
 const GUN_SPD = 25;
 const FRICTION = .2; //friction coefficient
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
@@ -270,8 +270,9 @@ function update() {
 
     for (let i = 0; i < ship.lasers.length; i++) {
         ctx.fillStyle = 'white';
+        ctx.beginPath();
         ctx.fillRect(ship.lasers[i].x, ship.lasers[i].y, 2, 2); 
-        ctx.stroke();
+        ctx.stroke();  
     }
 
     // bounding toggle
@@ -327,12 +328,12 @@ function update() {
     if (!exploding) {
         if (ship.blinkTime == 0) {
             for (let i = 0; i < roidsArray.length; i++) {
-            if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
-                // death = true;
-                explodeShip();
+                if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
+                    // death = true;
+                    explodeShip();
+                }
             }
         }
-    }
 
         // rotate ship
         ship.a += ship.rot;
