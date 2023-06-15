@@ -365,6 +365,18 @@ function update() {
     for (let i = 0; i < ship.lasers.length; i++) {
         ship.lasers[i].x += ship.lasers[i].xv;
         ship.lasers[i].y += ship.lasers[i].yv;
+
+        //handle edge of screen
+        if (ship.lasers[i].x < 0) {
+            ship.lasers[i].x = canvas.width;
+        } else if (ship.lasers[i].x > canvas.width) {
+            ship.lasers[i].x = 0;
+        }
+        if (ship.lasers[i].y < 0) {
+            ship.lasers[i].y = canvas.width;
+        } else if (ship.lasers[i].y > canvas.width) {
+            ship.lasers[i].y = 0;
+        }
     }
 
     // move the asteroid
