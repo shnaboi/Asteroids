@@ -5,8 +5,8 @@ const SHIP_EXPLOSION = 2; // ship explosion time in sec
 const SHIP_BLINK_DUR = .15; // blink duration in frames
 const SHIP_INV_DUR = 3; // ship invincible duration in sec
 const TURN_SPEED = 270; //degrees per second
-const GUN_MAX = 200;
-const GUN_SPD = 25;
+const GUN_MAX = 7;
+const GUN_SPD = 500;
 const FRICTION = .2; //friction coefficient
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
 const ROIDS_NUM = 3; //initial number of asteroids
@@ -148,7 +148,7 @@ function shootGun() {
             x: ship.x + 4/3 * ship.r * Math.cos(ship.a),
             y: ship.y - 4/3 * ship.r * Math.sin(ship.a),
             xv: GUN_SPD * Math.cos(ship.a) / FPS,
-            yv: GUN_SPD * Math.sin(ship.a) / FPS
+            yv: -GUN_SPD * Math.sin(ship.a) / FPS
         })
     }
 
@@ -359,6 +359,12 @@ function update() {
         ship.y = canvas.height + ship.r;
     } else if (ship.y > canvas.height + ship.r) {
         ship.y = 0 -ship.r;
+    }
+
+    // move lasers
+    for (let i = 0; i < ship.lasers.length; i++) {
+        ship.lasers[i].x += ship.lasers[i].xv;
+        ship.lasers[i].y += ship.lasers[i].yv;
     }
 
     // move the asteroid
