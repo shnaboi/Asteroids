@@ -7,6 +7,7 @@ const SHIP_INV_DUR = 3; // ship invincible duration in sec
 const TURN_SPEED = 270; //degrees per second
 const GUN_MAX = 7;
 const GUN_SPD = 500;
+const GUN_DIST = .69 //max distance bullet can travel as fraction of screen size
 const FRICTION = .2; //friction coefficient
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
 const ROIDS_NUM = 3; //initial number of asteroids
@@ -148,7 +149,8 @@ function shootGun() {
             x: ship.x + 4/3 * ship.r * Math.cos(ship.a),
             y: ship.y - 4/3 * ship.r * Math.sin(ship.a),
             xv: GUN_SPD * Math.cos(ship.a) / FPS,
-            yv: -GUN_SPD * Math.sin(ship.a) / FPS
+            yv: -GUN_SPD * Math.sin(ship.a) / FPS,
+            dist: 0
         })
     }
 
@@ -362,9 +364,20 @@ function update() {
     }
 
     // move lasers
-    for (let i = 0; i < ship.lasers.length; i++) {
+    for (let i = ship.lasers.length -1; i >= 0; i--) {
+        //check dist travelled
+        if (ship.lasers[i].dist > GUN_DIST * canvas.width) {
+            ship.lasers.splice(i, 1);
+            continue;
+        }
+
+        //update laser position
         ship.lasers[i].x += ship.lasers[i].xv;
         ship.lasers[i].y += ship.lasers[i].yv;
+
+        //calc dist travelled (x^2 + y^2 = total)
+        ship.lasers[i].dist += Math.sqrt(Math.pow(ship.lasers[i].xv, 2) + 
+            Math.pow(ship.lasers[i].yv, 2));
 
         //handle edge of screen
         if (ship.lasers[i].x < 0) {
