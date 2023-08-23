@@ -42,8 +42,26 @@ function createAsteroids() {
             x = Math.floor(Math.random() * canvas.width);
             y = Math.floor(Math.random() * canvas.height);
         } while (distanceBetweenPoints(ship.x, ship.y, x, y) < ROIDS_SIZE * 2 + ship.r);
-        roidsArray.push(newAsteroid(x, y));
+        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 2)));
     }
+}
+
+function destroyRoid(index) {
+    let x = roidsArray[index].x;
+    let y = roidsArray[index].y;
+    let r = roidsArray[index].r;
+
+    //split asteroid if necessary
+    if (r == Math.ceil(ROIDS_SIZE / 2)) {
+        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3)));
+        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3)));
+    } else if (r == Math.ceil(ROIDS_SIZE / 3)) {
+        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
+        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
+    }
+
+    //destroy roid
+    roidsArray.splice(index, 1);
 }
 
 function distanceBetweenPoints(xShip, yShip, xRoid, yRoid) {
@@ -101,7 +119,7 @@ function keyUp(/** @type {keyboardEvent} */ ev) {
     }
 }
 
-function newAsteroid(x, y) {
+function newAsteroid(x, y, r) {
     let newRoid = {
         x: x,
         y: y,
@@ -109,7 +127,7 @@ function newAsteroid(x, y) {
         xv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
         yv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
         // r = radius, a = angle in 360 radiuns
-        r: ROIDS_SIZE / 2,
+        r: r,
         a: Math.random() * Math.PI * 2,
         vert: Math.floor(Math.random() * ROIDS_VERT + ROIDS_VERT / 1.25),
         offset: []
@@ -296,7 +314,7 @@ function update() {
 
             // remove laser and asteroid
             ship.lasers.splice(j, 1);
-            roidsArray.splice(i, 1);
+            destroyRoid(i);
         }
         }
     }
@@ -357,6 +375,7 @@ function update() {
                 if (distanceBetweenPoints(ship.x, ship.y, roidsArray[i].x, roidsArray[i].y) < ship.r + roidsArray[i].r) {
                     // death = true;
                     explodeShip();
+                    destroyRoid(i);
                 }
             }
         }
