@@ -17,27 +17,36 @@ const ROIDS_VERT = 9; // avg amount of vertices of each asteroid
 const SHOW_BOUNDING = false; // show bounding circles
 const SHOW_CENTER_DOT = false; //show ship center dot
 
-let death = false;
-
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
 
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 
-let ship = newShip();
+// setup game paramaters
+let death = false;
+let ship, level, roidsArray;
+newGame();
 
-// setup asteroids
-let roidsArray = [];
-createAsteroids();
+function newGame() {
+    level = 0;
+    ship = newShip();
+    newLevel();
+}
+
+function newLevel() {
+    createAsteroids();
+    level++;
+}
 
 // setup game loop
 setInterval(update, 1000 / FPS);
 
+// push created asteroids into game
 function createAsteroids() {
     roidsArray = [];
     let x, y;
-    for (let i = 0; i < ROIDS_NUM; i++) {
+    for (let i = 0; i < ROIDS_NUM + level; i++) {
         do {
             x = Math.floor(Math.random() * canvas.width);
             y = Math.floor(Math.random() * canvas.height);
@@ -53,15 +62,18 @@ function destroyRoid(index) {
 
     //split asteroid if necessary
     if (r == Math.ceil(ROIDS_SIZE / 2)) {
-        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3)));
-        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3)));
-    } else if (r == Math.ceil(ROIDS_SIZE / 3)) {
+        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3.5)));
+        roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3.5)));
+    } else if (r == Math.ceil(ROIDS_SIZE / 3.5)) {
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
     }
 
     //destroy roid
     roidsArray.splice(index, 1);
+    if (roidsArray.length == 0) {
+        newLevel();
+    }
 }
 
 function distanceBetweenPoints(xShip, yShip, xRoid, yRoid) {
@@ -119,13 +131,15 @@ function keyUp(/** @type {keyboardEvent} */ ev) {
     }
 }
 
+//create single asteroid object
 function newAsteroid(x, y, r) {
+    let lvlMulti = .75 + .2 * level;
     let newRoid = {
         x: x,
         y: y,
         // xv and yv is the velocity * direction
-        xv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
-        yv: Math.random() * ROIDS_SPD / FPS * (Math.random() < .5 ? 1 : -1),
+        xv: Math.random() * ROIDS_SPD * lvlMulti / FPS * (Math.random() < .5 ? 1 : -1),
+        yv: Math.random() * ROIDS_SPD * lvlMulti / FPS * (Math.random() < .5 ? 1 : -1),
         // r = radius, a = angle in 360 radiuns
         r: r,
         a: Math.random() * Math.PI * 2,
@@ -376,6 +390,7 @@ function update() {
                     // death = true;
                     explodeShip();
                     destroyRoid(i);
+                    break;
                 }
             }
         }
@@ -459,4 +474,8 @@ function update() {
 
 }
 
-// fix respawn issue with do once while loop perhaps
+// create newLevel() function
+// add level counter
+// add life counter
+// add score counter
+// save high score
