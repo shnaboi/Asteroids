@@ -16,6 +16,8 @@ const ROIDS_SPD = 50; // init starting speed in pixels/sec
 const ROIDS_VERT = 9; // avg amount of vertices of each asteroid
 const SHOW_BOUNDING = false; // show bounding circles
 const SHOW_CENTER_DOT = false; //show ship center dot
+const TEXT_SIZE = 15;
+const TEXT_DISPLAY_TIME = 3.5;
 
 let canvas = document.getElementById('gameCanvas');
 let ctx = canvas.getContext('2d');
@@ -25,7 +27,7 @@ document.addEventListener('keyup', keyUp);
 
 // setup game paramaters
 let death = false;
-let ship, level, roidsArray;
+let ship, level, roidsArray, text, score;
 newGame();
 
 function newGame() {
@@ -35,6 +37,7 @@ function newGame() {
 }
 
 function newLevel() {
+    text = `Level ${level + 1}`;
     createAsteroids();
     level++;
 }
@@ -378,6 +381,10 @@ function update() {
             ctx.arc(x, y, r-2, 0, Math.PI * 2, true);
             ctx.stroke();
         }
+
+        // center dot for testing
+        // ctx.fillStyle = "white"
+        // ctx.fillRect(ship.x -1, ship.y - 1, 2, 2)
     }
 
     // GAME MOTION
@@ -468,9 +475,19 @@ function update() {
         }
     }
 
-    // center dot for testing
-    // ctx.fillStyle = "white"
-    // ctx.fillRect(ship.x -1, ship.y - 1, 2, 2)
+    //draw onscreen text (level first)
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'lightcyan';
+    ctx.font = '12px Courier';
+    ctx.fillText(text, canvas.width / 2, canvas.height / 12);
+    //score
+    // ctx.textAlign = 'center';
+    // ctx.textBaseline = 'middle';
+    // ctx.fillStyle = 'lightcyan';
+    // ctx.font = '12px Courier';
+    // ctx.fillText(score, canvas.width / 2, canvas.height / 12 + 24);
+
 
 }
 
