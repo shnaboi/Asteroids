@@ -32,6 +32,7 @@ newGame();
 
 function newGame() {
     level = 0;
+    score = 0;
     ship = newShip();
     newLevel();
 }
@@ -67,15 +68,19 @@ function destroyRoid(index) {
     if (r == Math.ceil(ROIDS_SIZE / 2)) {
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3.5)));
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 3.5)));
+        score += 75;
     } else if (r == Math.ceil(ROIDS_SIZE / 3.5)) {
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
+        score += 100;
     }
 
     //destroy roid
     roidsArray.splice(index, 1);
+    score += 150;
     if (roidsArray.length == 0) {
         newLevel();
+        score += 100;
     }
 }
 
@@ -478,15 +483,15 @@ function update() {
     //draw onscreen text (level first)
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'lightcyan';
+    ctx.fillStyle = 'white';
     ctx.font = '12px Courier';
     ctx.fillText(text, canvas.width / 2, canvas.height / 12);
     //score
-    // ctx.textAlign = 'center';
-    // ctx.textBaseline = 'middle';
-    // ctx.fillStyle = 'lightcyan';
-    // ctx.font = '12px Courier';
-    // ctx.fillText(score, canvas.width / 2, canvas.height / 12 + 24);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'white';
+    ctx.font = '12px Courier';
+    ctx.fillText(score, canvas.width / 2, canvas.height / 12 + 12);
 
 
 }
