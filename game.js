@@ -2,7 +2,7 @@ const FPS = 30;
 const SHIP_SIZE = 23;
 const SHIP_THRUST = 7 //acceleration of ship px/sec
 const SHIP_EXPLOSION = 2; // ship explosion time in sec
-const SHIP_BLINK_DUR = .15; // blink duration in frames
+const SHIP_BLINK_DUR = .15; // blink duration in frames 
 const SHIP_INV_DUR = 3; // ship invincible duration in sec
 const TURN_SPEED = 270; //degrees per second
 const GUN_MAX = 7;
@@ -275,6 +275,27 @@ function update() {
         ctx.beginPath();
         ctx.fillRect(ship.lasers[i].x, ship.lasers[i].y, 2, 2); 
         ctx.stroke();  
+    }
+
+    // detect laser & asteroid collision
+    let ax, ay, ar, lx, ly;
+    for (let i = roidsArray.length - 1; i >= 0; i--) {
+
+        //grab asteroid properties
+        ax = roidsArray[i].x;
+        ay = roidsArray[i].y;
+        ar = roidsArray[i].r;
+
+        // loop over lasers and grab properties
+        for (let j = ship.lasers.length - 1; j >= 0; j--) {
+            lx = ship.lasers[j].x;
+            ly = ship.lasers[j].y;
+        }
+
+        //detect hits
+        if (distanceBetweenPoints(ax, ay, lx, ly) < ar) {
+            ship.lasers.splice(j, 1);
+        }
     }
 
     // bounding toggle
