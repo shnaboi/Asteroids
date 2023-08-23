@@ -290,11 +290,14 @@ function update() {
         for (let j = ship.lasers.length - 1; j >= 0; j--) {
             lx = ship.lasers[j].x;
             ly = ship.lasers[j].y;
-        }
 
-        //detect hits
-        if (distanceBetweenPoints(ax, ay, lx, ly) < ar) {
+            //detect hits
+            if (distanceBetweenPoints(ax, ay, lx, ly) < ar) {
+
+            // remove laser and asteroid
             ship.lasers.splice(j, 1);
+            roidsArray.splice(i, 1);
+        }
         }
     }
 
