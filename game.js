@@ -73,11 +73,15 @@ function destroyRoid(index) {
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
         roidsArray.push(newAsteroid(x, y, Math.ceil(ROIDS_SIZE / 7)));
         score += 100;
+    } else {
+        score += 125;
     }
 
     //destroy roid
     roidsArray.splice(index, 1);
-    score += 150;
+    if (ship.lasers.length <= 1) {
+        score += 25;
+    }
     if (roidsArray.length == 0) {
         newLevel();
         score += 100;
@@ -337,6 +341,9 @@ function update() {
             // remove laser and asteroid
             ship.lasers.splice(j, 1);
             destroyRoid(i);
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Courier';
+            ctx.fillText('x', lx, ly);
         }
         }
     }
@@ -354,6 +361,7 @@ function update() {
     for (let i = 0; i < roidsArray.length; i++) {
         ctx.strokeStyle = 'slategrey';
         ctx.lineWidth = SHIP_SIZE / 20;
+        
         //get roid properties
         x = roidsArray[i].x;
         y = roidsArray[i].y;
