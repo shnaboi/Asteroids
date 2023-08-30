@@ -280,6 +280,7 @@ function update() {
             }
         }
     } else {
+        ship.canShoot = false;
         ctx.strokeStyle = 'white',
         ctx.lineWidth = SHIP_SIZE / 20;
         ctx.beginPath();
@@ -310,6 +311,8 @@ function update() {
             ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
         );
         ctx.stroke();
+
+
     }
 
     // draw lasers
