@@ -5,10 +5,11 @@ const SHIP_EXPLOSION = 2; // ship explosion time in sec
 const SHIP_BLINK_DUR = .15; // blink duration in frames 
 const SHIP_INV_DUR = 3; // ship invincible duration in sec
 const TURN_SPEED = 270; //degrees per second
+const FRICTION = .2; //friction coefficient
 const GUN_MAX = 7;
 const GUN_SPD = 500;
 const GUN_DIST = .69 //max distance bullet can travel as fraction of screen size
-const FRICTION = .2; //friction coefficient
+const LIFE = 3;
 const ROIDS_JAG = .25; // % of jaggedness of asteroid
 const ROIDS_NUM = 3; //initial number of asteroids
 const ROIDS_SIZE = 100; //init asteroid size in pixels
@@ -27,13 +28,14 @@ document.addEventListener('keyup', keyUp);
 
 // setup game paramaters
 let death = false;
-let ship, level, roidsArray, text, score;
+let ship, level, lives, roidsArray, text, score;
 newGame();
 
 function newGame() {
     level = 0;
     score = 0;
     ship = newShip();
+    lives = LIFE;
     newLevel();
 }
 
@@ -311,8 +313,6 @@ function update() {
             ship.y - ship.r * (2/3 * Math.sin(ship.a) + Math.cos(ship.a))
         );
         ctx.stroke();
-
-
     }
 
     // draw lasers
@@ -428,6 +428,8 @@ function update() {
         ship.explodeTime--;
 
         if (ship.explodeTime == 0) {
+            lives--;
+            console.log(lives);
             ship = newShip();
         }
     }
